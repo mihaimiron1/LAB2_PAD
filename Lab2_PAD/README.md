@@ -3,6 +3,8 @@
 Sistemul este format din trei procese independente: `SenderApp`, `BrokerApp` si `ReceiverApp` (C# / .NET 10, interfata Avalonia).
 Senderul nu cunoaste adresa receiverului; comunica numai cu brokerul, iar brokerul ruteaza dupa `topic`.
 
+Codul se afla in folderul `Lab2_PAD` al repository-ului; solutia este `Lab2_PAD/MessageHub.slnx`.
+
 Arhitectura din Partea 1 ramane aceeasi; se schimba implementarea comunicarii: in locul socket-urilor TCP cu JSON pe linie
 se folosesc **apeluri RPC gRPC**, iar datele sunt descrise in **Protocol Buffers** (`.proto`).
 
