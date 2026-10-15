@@ -226,6 +226,8 @@ BROKER_HOST=127.0.0.1
 BROKER_PORT=5000
 ```
 
+Pentru configurarea initiala, copiati `.env.example` in `.env` si modificati valorile daca este necesar. Fisierul `.env` este local si nu se publica in repository.
+
 ```powershell
 dotnet build MessageHub.slnx
 dotnet run --project BrokerApp
