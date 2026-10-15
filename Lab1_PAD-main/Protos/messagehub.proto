@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package messagehub;
+
+// codul C# generat ajunge in acest namespace (nu "MessageHub.Grpc": ar umbri namespace-ul Grpc.*)
+option csharp_namespace = "MessageHub.Contracts";
+
+import "google/protobuf/timestamp.proto";
+
+// contractul dintre Sender, Broker si Receiver; inlocuieste protocolul JSON pe linie din Partea 1
+service MessageBroker {
+  // sender: publica un mesaj; brokerul il ruteaza dupa topicul din corpul mesajului
+  rpc Publish (PublishRequest) returns (BrokerReply);
+
+  // sender: topicurile care au cel putin un abonat conectat
+  rpc ListTopics (ListTopicsRequest) returns (TopicList);
+
+  // receiver: canal bidirectional de lunga durata; primul cadru trimis este SubscribeRequest, apoi cate un Ack
+  // pentru fiecare mesaj primit; brokerul raspunde cu un BrokerReply si apoi livreaza mesajele
+  rpc Subscribe (stream ReceiverFrame) returns (stream BrokerFrame);
+
+  // receiver: adauga topicuri unui abonament existent
+  rpc AddTopics (AddTopicsRequest) returns (BrokerReply);
+}
+
+message Message {
+  string id = 1;                              // GUID generat de sender
+  string topic = 2;                           // tipul mesajului, folosit de broker la rutare
+  string payload = 3;
+  google.protobuf.Timestamp timestamp = 4;    // momentul publicarii (UTC)
+  string sender_id = 5;                       // numele logic al senderului
+}
+
+message PublishRequest {
+  Message message = 1;
+}
+
+message BrokerReply {
+  string code = 1;              // PUBLISH_ACCEPTED, SUBSCRIBED, TOPIC_ADDED
+  string detail = 2;
+  string client_endpoint = 3;   // adresa IP:port a clientului, asa cum o vede brokerul
+}
+
+message ListTopicsRequest {
+}
+
+message TopicList {
+  repeated string topics = 1;
+  string client_endpoint = 2;   // adresa IP:port a clientului, asa cum o vede brokerul
+}
+
+message SubscribeRequest {
+  string client_id = 1;
+  repeated string topics = 2;
+}
+
+message Ack {
+  string message_id = 1;
+}
+
+// cadrele trimise de receiver pe stream-ul Subscribe
+message ReceiverFrame {
+  oneof frame {
+    SubscribeRequest subscribe = 1;
+    Ack ack = 2;
+  }
+}
+
+// cadrele trimise de broker pe stream-ul Subscribe
+message BrokerFrame {
+  oneof frame {
+    BrokerReply reply = 1;
+    Message message = 2;
+  }
+}
+
+message AddTopicsRequest {
+  string client_id = 1;
+  repeated string topics = 2;
+}

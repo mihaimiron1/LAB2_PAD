@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/ReceiverApp/">
+    <Project Path="ReceiverApp/ReceiveApp.csproj" />
+  </Folder>
+  <Project Path="BrokerApp/BrokerApp.csproj" />
+  <Project Path="SenderApp/SenderApp.csproj" />
+</Solution>

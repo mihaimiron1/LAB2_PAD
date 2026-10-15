@@ -1,0 +1,126 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="480" d:DesignHeight="700"
+        x:Class="ReceiverApp.MainWindow"
+        Title="Message Hub - Receiver"
+        Width="480" Height="800" MinWidth="390" MinHeight="630"
+        Background="#F5F7FB">
+  <Window.Styles>
+    <Style Selector="TextBox">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="BorderBrush" Value="#D8E1ED"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Foreground" Value="Black"/>
+      <Setter Property="CaretBrush" Value="Black"/>
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#155EEF"/>
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#155EEF"/><Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#155EEF"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="14,10"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#1849C6"/><Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter">
+      <Setter Property="Background" Value="#12399E"/><Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.secondary">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="Foreground" Value="#344054"/>
+      <Setter Property="BorderBrush" Value="#D0D5DD"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="14,10"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#F2F4F7"/><Setter Property="Foreground" Value="#344054"/>
+    </Style>
+    <Style Selector="Button.secondary:pressed /template/ ContentPresenter">
+      <Setter Property="Background" Value="#E4E7EC"/><Setter Property="Foreground" Value="#344054"/>
+    </Style>
+  </Window.Styles>
+  <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="24">
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,2,0,20">
+      <Border Width="30" Height="30" Background="#155EEF" CornerRadius="9">
+        <TextBlock Text="M" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Border>
+      <TextBlock Text="MESSAGE HUB" FontSize="22" FontWeight="Bold" Foreground="#101828" VerticalAlignment="Center"/>
+    </StackPanel>
+
+    <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="17" BorderBrush="#E4E7EC" BorderThickness="1" Margin="0,0,0,14">
+      <StackPanel Spacing="11">
+        <TextBlock Text="ABONARE" FontWeight="Bold" Foreground="#101828"/>
+        <StackPanel Spacing="4">
+          <TextBlock Text="ADRESA BROKER (IP:PORT)" FontSize="10.5" FontWeight="SemiBold" Foreground="#667085"/>
+          <TextBox Name="BrokerAddressBox" Watermark="ex: 192.168.1.10:5000"/>
+        </StackPanel>
+        <StackPanel Spacing="4">
+          <TextBlock Text="ID CLIENT" FontSize="10.5" FontWeight="SemiBold" Foreground="#667085"/>
+          <TextBox Name="ClientIdBox" Text="receiver_1"/>
+        </StackPanel>
+        <StackPanel Spacing="4">
+          <TextBlock Text="TOPIC" FontSize="10.5" FontWeight="SemiBold" Foreground="#667085"/>
+          <TextBox Name="TopicBox" Text="Curs"/>
+        </StackPanel>
+        <Button Name="ConnectButton" Classes="primary" Content="Conecteaza receiverul" Click="OnConnectClick"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Ellipse Name="StatusDot" Width="9" Height="9" Fill="#98A2B3" VerticalAlignment="Center"/>
+          <TextBlock Name="StatusText" FontSize="12" Text="Neconectat" Foreground="#667085" TextWrapping="Wrap"/>
+        </StackPanel>
+        <TextBlock Name="ConnectionText" FontSize="11.5" Foreground="#155EEF" TextWrapping="Wrap"/>
+        <Border BorderBrush="#EAECF0" BorderThickness="0,1,0,0" Padding="0,11,0,0" Margin="0,2,0,0">
+          <StackPanel Spacing="8">
+            <TextBlock Text="ADAUGA TOPIC SUPLIMENTAR" FontSize="10.5" FontWeight="SemiBold" Foreground="#667085"/>
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Name="NewTopicBox" Watermark="ex: PAD" IsEnabled="False"/>
+              <Button Grid.Column="1" Name="AddTopicButton" Classes="secondary" Content="Adauga" Margin="8,0,0,0" IsEnabled="False" Click="OnAddTopicClick"/>
+            </Grid>
+            <TextBlock Name="TopicsText" FontSize="11.5" Foreground="#667085" TextWrapping="Wrap"/>
+            <CheckBox Name="SkipAckCheckBox" IsCheckedChanged="OnSkipAckChanged">
+              <TextBlock Text="Test: nu trimite ACK (brokerul retrimite dupa fiecare timeout de 5s, apoi muta mesajul in dead-letter)"
+                         TextWrapping="Wrap" FontSize="11.5" Foreground="#667085"/>
+            </CheckBox>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </Border>
+
+    <TextBlock Grid.Row="2" Text="MESAJE PRIMITE" FontSize="10.5" FontWeight="SemiBold" Foreground="#667085" Margin="2,0,2,8"/>
+
+    <ScrollViewer Grid.Row="3">
+      <ItemsControl Name="FeedList">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Background="White" CornerRadius="10" Padding="12" Margin="0,0,0,8" BorderBrush="#E4E7EC" BorderThickness="1">
+              <Grid ColumnDefinitions="Auto,*">
+                <Border Background="#12B76A" CornerRadius="5" Padding="7,3" Margin="0,0,10,0" VerticalAlignment="Top">
+                  <TextBlock Text="{Binding Topic}" Foreground="White" FontSize="10.5" FontWeight="SemiBold"/>
+                </Border>
+                <StackPanel Grid.Column="1" Spacing="2">
+                  <TextBlock Text="{Binding Payload}" TextWrapping="Wrap" FontSize="13" Foreground="#344054"/>
+                  <TextBlock Text="{Binding Time}" FontSize="10.5" Foreground="#98A2B3"/>
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </Grid>
+</Window>
